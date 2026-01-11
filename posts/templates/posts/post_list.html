@@ -1,0 +1,59 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}Latest Posts{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Latest Posts</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            {% for post in posts %}
+                <div class="card mb-4 post-entry">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ post.title }}</h2>
+                        <p class="card-text text-muted">
+                            Posted on {{ post.created_at|date:"F d, Y" }} by {{ post.author }}
+                            in <a href="{% url 'category_list' post.category.slug %}">{{ post.category.name }}</a>
+                        </p>
+                        <p class="card-text">{{ post.content|truncatewords:30 }}</p>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No posts found.</p>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-4">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><a class="page-link" href="#">&larr; Newer</a></li>
+                        {% endif %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><a class="page-link" href="#">Older &rarr;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Search Widget/Categories could go here -->
+            <div class="card mb-4">
+                <div class="card-header">Info</div>
+                <div class="card-body">
+                    You can manage posts via the <a href="/admin/">Admin Interface</a>.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
